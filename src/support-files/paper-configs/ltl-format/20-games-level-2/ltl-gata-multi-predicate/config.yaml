@@ -1,0 +1,223 @@
+io:
+  tag: null
+  root: '.'
+  output_dir: 'output'
+  checkpoint_dir: 'checkpoints'
+  trajectories_dir: 'trajectories'
+  data_dir: "support-files/rl.0.2"
+  vocab_dir: "support-files/vocabularies"
+  report_frequency: 1000  # episode
+  report_history_length: 500
+  save_trajectories_frequency: -1
+  pretrained_embedding_path: "support-files/crawl-300d-2M.vec.h5"
+
+pretrain:
+  ltl: true
+  batch_size: 128
+  max_episodes: 10000
+  steps_per_episode: 50
+  learn_from_this_episode: -1
+
+test:
+  filename: 'checkpoints/best_eval.pt'
+  game: 'cooking'
+  batch_size: 20
+  difficulty_level: 7
+  steps_per_episode: 100
+  feed_cookbook_observation: False
+  softmax: False
+  softmax_temperature: 100
+  eps: 0.0
+
+evaluate:
+  run: True
+  game: 'cooking'
+  batch_size: 20
+  frequency: 1000
+  adjust_rewards: False
+  difficulty_level: 7
+  steps_per_episode: 100
+  feed_cookbook_observation: False
+  eps: 0
+
+checkpoint:
+  load: False
+  resume: False
+  filename: 'best.pt'
+  save_frequency: 1000  # episode
+  save_each: False
+
+training:
+  game: 'cooking'
+  plot: False
+  cuda: True
+  mlm_alpha: 1
+  batch_size: 50
+  random_seed: 123
+  max_episode: 100000
+  light_env_infos: True
+  penalize_path_length: -1 # -1 to disable
+  use_negative_reward: False
+  persistent_negative_reward: False
+  end_on_ltl_violation: True
+  reward_ltl: True
+  reward_ltl_only: False
+  reward_ltl_positive_only: False
+  backwards_ltl: false
+  reward_per_ltl_progression: False
+  optimizer:
+    name: 'adam'
+    kwargs:
+      lr: 0.0003
+    scheduler: null
+    scheduler_kwargs:
+      gamma: 0.95
+      step_size: 30000
+    clip_grad_norm: 5
+    learning_rate_warmup:  0
+    fix_parameters_keywords: []
+  patience: 3  # >=1 to enable
+  difficulty_level: 7  # 3=1, 7=2, 5=3, 9=4
+  training_size: 20  # 1, 20, 100
+  game_limit: -1
+  steps_per_episode: 50
+  update_per_k_game_steps: 1
+  learn_from_this_episode: 1000
+  target_net_update_frequency: 500
+  context_length: 1
+  graph_reward_lambda: -1
+  graph_reward_filtered: False
+  randomized_nouns_verbs: False
+  all_games: False
+  feed_cookbook_observation: False
+  strip_instructions: False
+  prune_actions: False
+
+  reset_experience_on_load: False # resets experience on checkpoint loading
+  experience_replay:
+    eps: 0.000001
+    beta: 0.4
+    alpha: 0.6
+    multi_step: 1
+    batch_size: 64
+    capacity: 500000
+    buffer_reward_threshold: 0.1
+    sample_update_from: 4
+    discount_gamma_game_reward: 0.9
+    sample_history_length: 8 # for recurrent
+    accumulate_reward_from_final: False
+
+  epsilon_greedy: # check this
+    anneal_from: 1.0
+    anneal_to: 0.1
+    episodes: 3000  # -1 if not annealing
+
+ltl:
+  use_ground_truth: False
+  quest_only: False
+  reward_scale: 1
+  as_bonus: True
+  next_constrained: False
+  single_token_prop: False
+  incomplete_cookbook: False
+  no_cookbook: False
+  single_reward: False
+  negative_for_fail: False
+  dont_progress: False
+
+model:
+  use_ltl: True
+  inverse_dynamics_loss: False
+  use_independent_actions_encoder: True
+  recurrent_memory: False
+  use_observations: True
+  use_belief_graph: True
+  concat_features: True
+  use_pretrained_lm_for_actions: False
+  concat_strings: False
+  same_ltl_text_encoder: False
+  action_net_hidden_size:  64
+
+actions_encoder:
+  lstm_backbone: False
+  mlp_backbone: False
+  one_hot_encoding: False
+  use_pretrained_lm: False
+  pretrained_lm_name: 'bert'
+  pretrained_lm_checkpoint: null
+  trainable: True
+  self_attention: True
+  position_encoding: "cossine"
+  mlm_loss: False
+  ### Details
+  word_embedding_size: 300
+  encoder_conv_num: 5
+  num_encoders: 1
+  n_heads: 1
+  action_net_hidden_size:  64
+  pretrained_embedding_path: "support-files/crawl-300d-2M.vec.h5"
+
+text_encoder:
+  lstm_backbone: False
+  mlp_backbone: False
+  one_hot_encoding: False
+  use_pretrained_lm: False
+  pretrained_lm_name: 'bert'
+  pretrained_lm_checkpoint: null
+  trainable: True
+  self_attention: True
+  position_encoding: "cossine"
+  mlm_loss: False
+  ### Details
+  word_embedding_size: 300
+  encoder_conv_num: 5
+  num_encoders: 1
+  n_heads: 1
+  action_net_hidden_size:  64
+  pretrained_embedding_path: "support-files/crawl-300d-2M.vec.h5"
+
+ltl_encoder:
+  lstm_backbone: False
+  mlp_backbone: False
+  one_hot_encoding: False
+  use_pretrained_lm: False
+  pretrained_lm_name: 'bert'
+  pretrained_lm_checkpoint: null
+  trainable: True
+  self_attention: True
+  position_encoding: "cossine"
+  mlm_loss: False
+  ### Details
+  word_embedding_size: 300
+  encoder_conv_num: 5
+  num_encoders: 1
+  n_heads: 1
+  action_net_hidden_size:  64
+  pretrained_embedding_path: "support-files/crawl-300d-2M.vec.h5"
+
+graph_updater:
+  # COC MODEL
+  # checkpoint: 'support-files/gata-models/gata_pretrain_obs_infomax_model.pt'
+  # GTP MODEL - aug for the augmented dataset we use
+  checkpoint: 'support-files/gata-models/gata_gtp_pretrain_cmd_gen_model_aug.pt'
+  from_pretrained: True
+  use_self_attention: False
+  max_target_length: 200
+  n_heads: 1
+  real_valued: False
+  block_dropout: 0.
+  encoder_layers: 1
+  decoder_layers: 1
+  encoder_conv_num: 5
+  block_hidden_dim: 64
+  attention_dropout: 0.
+  embedding_dropout: 0.
+  node_embedding_size: 100
+  relation_embedding_size: 32
+  gcn_dropout: 0.
+  gcn_num_bases: 3
+  gcn_highway_connections: True
+  gcn_hidden_dims: [64, 64, 64, 64, 64, 64]  # last one should equal to block hidden dim
+  use_ground_truth_graph: False
+  word_embedding_size: 300
+  embedding_dropout: 0.

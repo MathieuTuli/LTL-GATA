@@ -1,0 +1,5 @@
+weights
+**/plots/figures-old/
+**/plots/figures/
+**/plots/train_curves.py
+**/plots/training.ipynb
